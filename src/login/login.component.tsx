@@ -87,8 +87,6 @@ const Login: React.FC = () => {
       const currentPassword = passwordInputRef.current?.value || password;
       const isOtpEnabled: boolean = await getOtpEnabledStatus();
 
-      console.log('OTPSTATUS: ', isOtpEnabled);
-
       if (showPasswordOnSeparateScreen && !showPasswordField) {
         continueLogin();
         return false;
