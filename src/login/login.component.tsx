@@ -1,14 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import {
-  Button,
-  InlineLoading,
-  InlineNotification,
-  PasswordInput,
-  TextInput,
-  Tile,
-} from "@carbon/react";
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Button, InlineLoading, InlineNotification, PasswordInput, TextInput, Tile } from '@carbon/react';
 import {
   ArrowRightIcon,
   getCoreTranslation,
@@ -17,45 +10,43 @@ import {
   useConfig,
   useConnectivity,
   useSession,
-} from "@openmrs/esm-framework";
-import { type ConfigSchema } from "../config-schema";
-import Logo from "../logo.component";
-import Footer from "../footer.component";
-import styles from "./login.scss";
-import { getOtp } from "../resources/otp.resource";
+} from '@openmrs/esm-framework';
+import { type ConfigSchema } from '../config-schema';
+import Logo from '../logo.component';
+import Footer from '../footer.component';
+import styles from './login.scss';
+import { getOtp } from '../resources/otp.resource';
+import { getOtpEnabledStatus } from '../utils/get-base-url';
+import { boolean } from 'zod';
 
 export interface LoginReferrer {
   referrer?: string;
 }
 
 const Login: React.FC = () => {
-  const {
-    showPasswordOnSeparateScreen,
-    provider: loginProvider,
-    links: loginLinks,
-  } = useConfig<ConfigSchema>();
+  const { showPasswordOnSeparateScreen, provider: loginProvider, links: loginLinks } = useConfig<ConfigSchema>();
   const isLoginEnabled = useConnectivity();
   const { t } = useTranslation();
   const { user } = useSession();
-  const location = useLocation() as unknown as Omit<Location, "state"> & {
+  const location = useLocation() as unknown as Omit<Location, 'state'> & {
     state: LoginReferrer;
   };
   const navigate = useNavigate();
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [showPasswordField, setShowPasswordField] = useState(false);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const usernameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) {
-      if (loginProvider.type === "oauth2") {
+      if (loginProvider.type === 'oauth2') {
         openmrsNavigate({ to: loginProvider.loginUrl });
-      } else if (!username && location.pathname === "/login/confirm") {
-        navigate("/login");
+      } else if (!username && location.pathname === '/login/confirm') {
+        navigate('/login');
       }
     }
   }, [username, navigate, location, user, loginProvider]);
@@ -83,14 +74,8 @@ const Login: React.FC = () => {
     }
   }, []);
 
-  const changeUsername = useCallback(
-    (evt: React.ChangeEvent<HTMLInputElement>) => setUsername(evt.target.value),
-    []
-  );
-  const changePassword = useCallback(
-    (evt: React.ChangeEvent<HTMLInputElement>) => setPassword(evt.target.value),
-    []
-  );
+  const changeUsername = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => setUsername(evt.target.value), []);
+  const changePassword = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => setPassword(evt.target.value), []);
 
   const handleSubmit = useCallback(
     async (evt: React.FormEvent<HTMLFormElement>) => {
@@ -98,9 +83,11 @@ const Login: React.FC = () => {
       evt.stopPropagation();
 
       // If credentials were autofilled, input onChange might not have been called
-      const currentUsername =
-        usernameInputRef.current?.value?.trim() || username;
+      const currentUsername = usernameInputRef.current?.value?.trim() || username;
       const currentPassword = passwordInputRef.current?.value || password;
+      const isOtpEnabled: boolean = await getOtpEnabledStatus();
+
+      console.log('OTPSTATUS: ', isOtpEnabled);
 
       if (showPasswordOnSeparateScreen && !showPasswordField) {
         continueLogin();
@@ -114,41 +101,70 @@ const Login: React.FC = () => {
 
       try {
         setIsLoggingIn(true);
-        const sessionStore = await refetchCurrentUser(
-          currentUsername,
-          currentPassword
-        );
+        const sessionStore = await refetchCurrentUser(currentUsername, currentPassword);
         const session = sessionStore.session;
         const authenticated = sessionStore?.session?.authenticated;
 
-        if (authenticated) {
-          if (session.sessionLocation) {
-            let to = loginLinks?.loginSuccess || "/home";
-            if (location?.state?.referrer) {
-              if (location.state.referrer.startsWith("/")) {
-                to = `\${openmrsSpaBase}${location.state.referrer}`;
-              } else {
-                to = location.state.referrer;
+        if (isOtpEnabled === true) {
+          if (authenticated) {
+            if (session.sessionLocation) {
+              let to = loginLinks?.loginSuccess || '/home';
+              if (location?.state?.referrer) {
+                if (location.state.referrer.startsWith('/')) {
+                  to = `\${openmrsSpaBase}${location.state.referrer}`;
+                } else {
+                  to = location.state.referrer;
+                }
               }
+              await getOtp(username, password);
+              navigate('otp', {
+                state: {
+                  username,
+                  password,
+                  referrer: location?.state?.referrer,
+                },
+              });
+            } else if (!session.sessionLocation) {
+              await getOtp(username, password);
+              navigate('otp', {
+                state: {
+                  username,
+                  password,
+                  referrer: location?.state?.referrer,
+                },
+              });
             }
-
-            await getOtp(username, password);
-            navigate("otp", {
-              state: {
-                username,
-                password,
-                referrer: location?.state?.referrer,
-              },
-            });
+          } else {
+            setErrorMessage(t('invalidCredentials', 'Invalid username or password'));
+            setUsername('');
+            setPassword('');
+            if (showPasswordOnSeparateScreen) {
+              setShowPasswordField(false);
+            }
           }
         } else {
-          setErrorMessage(
-            t("invalidCredentials", "Invalid username or password")
-          );
-          setUsername("");
-          setPassword("");
-          if (showPasswordOnSeparateScreen) {
-            setShowPasswordField(false);
+          if (authenticated) {
+            if (session.sessionLocation) {
+              let to = loginLinks?.loginSuccess || '/home';
+              if (location?.state?.referrer) {
+                if (location.state.referrer.startsWith('/')) {
+                  to = `\${openmrsSpaBase}${location.state.referrer}`;
+                } else {
+                  to = location.state.referrer;
+                }
+              }
+
+              openmrsNavigate({ to });
+            } else {
+              navigate('/login/location');
+            }
+          } else {
+            setErrorMessage(t('invalidCredentials', 'Invalid username or password'));
+            setUsername('');
+            setPassword('');
+            if (showPasswordOnSeparateScreen) {
+              setShowPasswordField(false);
+            }
           }
         }
 
@@ -157,12 +173,10 @@ const Login: React.FC = () => {
         if (error instanceof Error) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage(
-            t("invalidCredentials", "Invalid username or password")
-          );
+          setErrorMessage(t('invalidCredentials', 'Invalid username or password'));
         }
-        setUsername("");
-        setPassword("");
+        setUsername('');
+        setPassword('');
         if (showPasswordOnSeparateScreen) {
           setShowPasswordField(false);
         }
@@ -180,10 +194,10 @@ const Login: React.FC = () => {
       location,
       t,
       continueLogin,
-    ]
+    ],
   );
 
-  if (!loginProvider || loginProvider.type === "basic") {
+  if (!loginProvider || loginProvider.type === 'basic') {
     return (
       <div className={styles.container}>
         <Tile className={styles.loginCard}>
@@ -192,8 +206,8 @@ const Login: React.FC = () => {
               <InlineNotification
                 kind="error"
                 subtitle={t(errorMessage)}
-                title={getCoreTranslation("error")}
-                onClick={() => setErrorMessage("")}
+                title={getCoreTranslation('error')}
+                onClick={() => setErrorMessage('')}
               />
             </div>
           )}
@@ -207,7 +221,7 @@ const Login: React.FC = () => {
                 type="text"
                 name="username"
                 autoComplete="username"
-                labelText={t("username", "Username")}
+                labelText={t('username', 'Username')}
                 value={username}
                 onChange={changeUsername}
                 ref={usernameInputRef}
@@ -216,25 +230,18 @@ const Login: React.FC = () => {
               />
               {showPasswordOnSeparateScreen ? (
                 <>
-                  <div
-                    className={
-                      showPasswordField ? undefined : styles.hiddenPasswordField
-                    }
-                  >
+                  <div className={showPasswordField ? undefined : styles.hiddenPasswordField}>
                     <PasswordInput
                       id="password"
-                      labelText={t("password", "Password")}
+                      labelText={t('password', 'Password')}
                       name="password"
                       autoComplete="current-password"
                       onChange={changePassword}
                       ref={passwordInputRef}
                       required
                       value={password}
-                      showPasswordLabel={t("showPassword", "Show password")}
-                      invalidText={t(
-                        "validValueRequired",
-                        "A valid value is required"
-                      )}
+                      showPasswordLabel={t('showPassword', 'Show password')}
+                      invalidText={t('validValueRequired', 'A valid value is required')}
                       aria-hidden={!showPasswordField}
                       tabIndex={showPasswordField ? 0 : -1}
                     />
@@ -243,31 +250,21 @@ const Login: React.FC = () => {
                     <Button
                       type="submit"
                       className={styles.continueButton}
-                      renderIcon={(props) => (
-                        <ArrowRightIcon size={24} {...props} />
-                      )}
-                      iconDescription={t(
-                        "loginButtonIconDescription",
-                        "Log in button"
-                      )}
+                      renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
+                      iconDescription={t('loginButtonIconDescription', 'Log in button')}
                       disabled={!isLoginEnabled || isLoggingIn}
                     >
                       {isLoggingIn ? (
-                        <InlineLoading
-                          className={styles.loader}
-                          description={t("loggingIn", "Logging in") + "..."}
-                        />
+                        <InlineLoading className={styles.loader} description={t('loggingIn', 'Logging in') + '...'} />
                       ) : (
-                        t("login", "Log in")
+                        t('login', 'Log in')
                       )}
                     </Button>
                   ) : (
                     <Button
                       type="submit"
                       className={styles.continueButton}
-                      renderIcon={(props) => (
-                        <ArrowRightIcon size={24} {...props} />
-                      )}
+                      renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
                       iconDescription="Continue to password"
                       onClick={(evt) => {
                         evt.preventDefault();
@@ -275,7 +272,7 @@ const Login: React.FC = () => {
                       }}
                       disabled={!isLoginEnabled}
                     >
-                      {t("continue", "Continue")}
+                      {t('continue', 'Continue')}
                     </Button>
                   )}
                 </>
@@ -283,35 +280,27 @@ const Login: React.FC = () => {
                 <>
                   <PasswordInput
                     id="password"
-                    labelText={t("password", "Password")}
+                    labelText={t('password', 'Password')}
                     name="password"
                     autoComplete="current-password"
                     onChange={changePassword}
                     ref={passwordInputRef}
                     required
                     value={password}
-                    showPasswordLabel={t("showPassword", "Show password")}
-                    invalidText={t(
-                      "validValueRequired",
-                      "A valid value is required"
-                    )}
+                    showPasswordLabel={t('showPassword', 'Show password')}
+                    invalidText={t('validValueRequired', 'A valid value is required')}
                   />
                   <Button
                     type="submit"
                     className={styles.continueButton}
-                    renderIcon={(props) => (
-                      <ArrowRightIcon size={24} {...props} />
-                    )}
+                    renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
                     iconDescription="Log in"
                     disabled={!isLoginEnabled || isLoggingIn}
                   >
                     {isLoggingIn ? (
-                      <InlineLoading
-                        className={styles.loader}
-                        description={t("loggingIn", "Logging in") + "..."}
-                      />
+                      <InlineLoading className={styles.loader} description={t('loggingIn', 'Logging in') + '...'} />
                     ) : (
-                      t("login", "Log in")
+                      t('login', 'Log in')
                     )}
                   </Button>
                 </>
