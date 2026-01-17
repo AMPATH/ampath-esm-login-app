@@ -10,3 +10,8 @@ export async function getOtpEnabledStatus() {
   const { enabled } = await getConfig(moduleName);
   return enabled ?? null;
 }
+
+export async function getSubDomain() {
+  const { subDomain } = await getConfig(moduleName);
+  return subDomain ?? null;
+}

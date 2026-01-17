@@ -34,10 +34,11 @@
 
 .container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
   position: relative;
+  margin-left: 10rem;
 }
 
 .center {
@@ -164,4 +165,17 @@
   overflow: hidden;
   position: absolute;
   pointer-events: none;
+}
+
+.wrapperContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 10rem;
+}
+
+.image {
+  width: 50rem;
+  height: 55rem;
+  max-height: 60rem;
+  object-fit: cover;
 }

@@ -8,6 +8,10 @@
   gap: 1rem;
   margin-left: 5rem;
 }
+.leftSide {
+  margin-top: 10rem;
+  margin-left: 10rem;
+}
 
 .button {
   width: 15rem;
@@ -27,20 +31,14 @@
 
 .wrapperContainer {
   display: flex;
-  gap: 5rem;
-}
-
-.rightSide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50rem;
+  flex-direction: row;
+  gap: 10rem;
 }
 
 .image {
-  width: 60rem;
-  height: 40rem;
-  border-radius: 5px;
-  // max-height: 40rem;
-  // object-fit: contain;
+  width: 54rem;
+  height: 55rem;
+  max-height: 60rem;
+  object-fit: cover;
+  flex-shrink: 0;
 }

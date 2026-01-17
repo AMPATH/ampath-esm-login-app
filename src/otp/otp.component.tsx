@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import { Button, InlineNotification, Loading } from "@carbon/react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import React, { useState } from 'react';
+import { Button, InlineNotification, Loading } from '@carbon/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import styles from "./otp.scss";
-import OTPInput from "../common/otp/otp.component";
-import ResendTimer from "../common/resend-timer/resend-timer.component";
-import Footer from "../footer.component";
-import Logo from "../logo.component";
-import { verifyOtp } from "../resources/otp.resource";
-import { refetchCurrentUser } from "@openmrs/esm-framework";
+import styles from './otp.module.scss';
+import OTPInput from '../common/otp/otp.component';
+import ResendTimer from '../common/resend-timer/resend-timer.component';
+import Logo from '../logo.component';
+import { verifyOtp } from '../resources/otp.resource';
+import { refetchCurrentUser } from '@openmrs/esm-framework';
+
+import image from '../assets/medicine.jpg';
 
 const OtpComponent: React.FC = () => {
-  const [otpValue, setOtpValue] = useState("");
+  const [otpValue, setOtpValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -36,13 +37,13 @@ const OtpComponent: React.FC = () => {
         const session = sessionStore.session;
 
         if (!session.sessionLocation) {
-          navigate("/login/location");
+          navigate('/login/location');
           return;
         }
 
-        let to = "/home";
+        let to = '/home';
         if (location.state?.referrer) {
-          to = location.state.referrer.startsWith("/")
+          to = location.state.referrer.startsWith('/')
             ? `\${openmrsSpaBase}${location.state.referrer}`
             : location.state.referrer;
         }
@@ -52,23 +53,25 @@ const OtpComponent: React.FC = () => {
         setError(res.data.message);
       }
     } catch (error) {
-      setError(
-        error?.message ||
-          error?.attributes?.error ||
-          "Invalid OTP or credentials"
-      );
+      setError(error?.message || error?.attributes?.error || 'Invalid OTP or credentials');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate(-1);
+    const fallback = 'login';
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(fallback, { replace: true });
+    }
   };
+
   return (
     <>
       <div className={styles.wrapperContainer}>
-        <div>
+        <div className={styles.leftSide}>
           <div className={styles.logo}>
             <Logo t={t} />
           </div>
@@ -88,15 +91,15 @@ const OtpComponent: React.FC = () => {
               />
             )}
             <Button className={styles.button} onClick={handleVerify}>
-              {isLoading ? <Loading /> : "Verify"}
+              {isLoading ? <Loading /> : 'Verify'}
             </Button>
             <Button className={styles.button} onClick={handleCancel}>
               Cancel
             </Button>
             <ResendTimer username={username} password={password} />
-            <Footer />
           </div>
         </div>
+        <img className={styles.image} src={image} alt="TAIFA CARE" />
       </div>
     </>
   );
