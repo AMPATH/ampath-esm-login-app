@@ -102,7 +102,7 @@ const Login: React.FC = () => {
         const session = sessionStore.session;
         const authenticated = sessionStore?.session?.authenticated;
 
-        if (isOtpEnabled !== true) {
+        if (isOtpEnabled === true) {
           if (authenticated) {
             if (session.sessionLocation) {
               let to = loginLinks?.loginSuccess || '/home';
