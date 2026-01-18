@@ -46,13 +46,13 @@
 }
 
 .logo {
-  margin-bottom: layout.$spacing-08;
+  // margin-bottom: layout.$spacing-08;
   height: layout.$spacing-11;
   width: 16rem;
 }
 
 .logoImg {
-  margin-bottom: layout.$spacing-09;
+  // margin-bottom: layout.$spacing-03;
   max-width: 100%;
 }
 
@@ -178,4 +178,70 @@
   height: 55rem;
   max-height: 60rem;
   object-fit: cover;
+}
+
+.poweredBy {
+  display: flex;
+  align-items: center;
+  justify-self: flex-end;
+  font-size: 0.75rem;
+  color: $color-gray-70;
+  color: $text-02;
+  opacity: 0.85;
+  white-space: nowrap;
+  font-weight: bold;
+  margin-bottom: layout.$spacing-08;
+}
+
+.poweredByLogo {
+  margin-left: 0.5rem;
+  width: 2rem;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.logoSection {
+  position: absolute;
+  bottom: layout.$spacing-06;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 layout.$spacing-06;
+  gap: 20rem;
+}
+
+.leftLogos {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  border: 2px solid lightgray;
+  border-radius: 0.5rem;
+}
+
+.supportingLogos {
+  margin-left: 0.5rem;
+  width: 3rem;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+.dhaLogo {
+  margin-left: 0.5rem;
+  width: 4rem;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+.openmsrsLogo {
+  margin-left: 0.5rem;
+  width: 6rem;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
 }

@@ -17,6 +17,9 @@ import styles from './login.scss';
 import { getEmail, getOtp } from '../resources/otp.resource';
 import { getOtpEnabledStatus } from '../utils/get-base-url';
 import image from '../assets/medicine.jpg';
+import openmrsLogo from '../assets/openmrs.jpg';
+import dhaLogo from '../assets/dha.png';
+import gokLogo from '../assets/gok.png';
 
 export interface LoginReferrer {
   referrer?: string;
@@ -212,38 +215,89 @@ const Login: React.FC = () => {
     return (
       <>
         <div className={styles.wrapperContainer}>
-          <div className={styles.container}>
-            <Tile className={styles.loginCard}>
-              {errorMessage && (
-                <div className={styles.errorMessage}>
-                  <InlineNotification
-                    kind="error"
-                    subtitle={errorMessage}
-                    title={getCoreTranslation('error')}
-                    onClick={() => setErrorMessage('')}
-                  />
+          <div className={styles.logoContainer}>
+            <div className={styles.container}>
+              <Tile className={styles.loginCard}>
+                {errorMessage && (
+                  <div className={styles.errorMessage}>
+                    <InlineNotification
+                      kind="error"
+                      subtitle={errorMessage}
+                      title={getCoreTranslation('error')}
+                      onClick={() => setErrorMessage('')}
+                    />
+                  </div>
+                )}
+                <div className={styles.center}>
+                  <Logo t={t} />
                 </div>
-              )}
-              <div className={styles.center}>
-                <Logo t={t} />
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className={styles.inputGroup}>
-                  <TextInput
-                    id="username"
-                    type="text"
-                    name="username"
-                    autoComplete="username"
-                    labelText={t('username', 'Username')}
-                    value={username}
-                    onChange={changeUsername}
-                    ref={usernameInputRef}
-                    required
-                    autoFocus
-                  />
-                  {showPasswordOnSeparateScreen ? (
-                    <>
-                      <div className={showPasswordField ? undefined : styles.hiddenPasswordField}>
+                <form onSubmit={handleSubmit}>
+                  <div className={styles.inputGroup}>
+                    <TextInput
+                      id="username"
+                      type="text"
+                      name="username"
+                      autoComplete="username"
+                      labelText={t('username', 'Username')}
+                      value={username}
+                      onChange={changeUsername}
+                      ref={usernameInputRef}
+                      required
+                      autoFocus
+                    />
+                    {showPasswordOnSeparateScreen ? (
+                      <>
+                        <div className={showPasswordField ? undefined : styles.hiddenPasswordField}>
+                          <PasswordInput
+                            id="password"
+                            labelText={t('password', 'Password')}
+                            name="password"
+                            autoComplete="current-password"
+                            onChange={changePassword}
+                            ref={passwordInputRef}
+                            required
+                            value={password}
+                            showPasswordLabel={t('showPassword', 'Show password')}
+                            invalidText={t('validValueRequired', 'A valid value is required')}
+                            aria-hidden={!showPasswordField}
+                            tabIndex={showPasswordField ? 0 : -1}
+                          />
+                        </div>
+                        {showPasswordField ? (
+                          <Button
+                            type="submit"
+                            className={styles.continueButton}
+                            renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
+                            iconDescription={t('loginButtonIconDescription', 'Log in button')}
+                            disabled={!isLoginEnabled || isLoggingIn}
+                          >
+                            {isLoggingIn ? (
+                              <InlineLoading
+                                className={styles.loader}
+                                description={t('loggingIn', 'Logging in') + '...'}
+                              />
+                            ) : (
+                              t('login', 'Log in')
+                            )}
+                          </Button>
+                        ) : (
+                          <Button
+                            type="submit"
+                            className={styles.continueButton}
+                            renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
+                            iconDescription="Continue to password"
+                            onClick={(evt) => {
+                              evt.preventDefault();
+                              continueLogin();
+                            }}
+                            disabled={!isLoginEnabled}
+                          >
+                            {t('continue', 'Continue')}
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <>
                         <PasswordInput
                           id="password"
                           labelText={t('password', 'Password')}
@@ -255,16 +309,12 @@ const Login: React.FC = () => {
                           value={password}
                           showPasswordLabel={t('showPassword', 'Show password')}
                           invalidText={t('validValueRequired', 'A valid value is required')}
-                          aria-hidden={!showPasswordField}
-                          tabIndex={showPasswordField ? 0 : -1}
                         />
-                      </div>
-                      {showPasswordField ? (
                         <Button
                           type="submit"
                           className={styles.continueButton}
                           renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
-                          iconDescription={t('loginButtonIconDescription', 'Log in button')}
+                          iconDescription="Log in"
                           disabled={!isLoginEnabled || isLoggingIn}
                         >
                           {isLoggingIn ? (
@@ -276,54 +326,19 @@ const Login: React.FC = () => {
                             t('login', 'Log in')
                           )}
                         </Button>
-                      ) : (
-                        <Button
-                          type="submit"
-                          className={styles.continueButton}
-                          renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
-                          iconDescription="Continue to password"
-                          onClick={(evt) => {
-                            evt.preventDefault();
-                            continueLogin();
-                          }}
-                          disabled={!isLoginEnabled}
-                        >
-                          {t('continue', 'Continue')}
-                        </Button>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <PasswordInput
-                        id="password"
-                        labelText={t('password', 'Password')}
-                        name="password"
-                        autoComplete="current-password"
-                        onChange={changePassword}
-                        ref={passwordInputRef}
-                        required
-                        value={password}
-                        showPasswordLabel={t('showPassword', 'Show password')}
-                        invalidText={t('validValueRequired', 'A valid value is required')}
-                      />
-                      <Button
-                        type="submit"
-                        className={styles.continueButton}
-                        renderIcon={(props) => <ArrowRightIcon size={24} {...props} />}
-                        iconDescription="Log in"
-                        disabled={!isLoginEnabled || isLoggingIn}
-                      >
-                        {isLoggingIn ? (
-                          <InlineLoading className={styles.loader} description={t('loggingIn', 'Logging in') + '...'} />
-                        ) : (
-                          t('login', 'Log in')
-                        )}
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </form>
-            </Tile>
+                      </>
+                    )}
+                  </div>
+                </form>
+              </Tile>
+            </div>
+            <div className={styles.logoSection}>
+              <div className={styles.leftLogos}>
+                <img src={gokLogo} alt="GOK logo" className={styles.supportingLogos} />
+                <img src={dhaLogo} alt="DHA logo" className={styles.dhaLogo} />
+              </div>
+              <img src={openmrsLogo} alt="OpenMRS logo" className={styles.openmsrsLogo} />
+            </div>
           </div>
           <img className={styles.image} src={image} alt="TAIFA CARE" />
         </div>
