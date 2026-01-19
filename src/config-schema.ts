@@ -99,6 +99,16 @@ export const configSchema = {
     _description:
       'Whether to show the password field on a separate screen. If false, the password field will be shown on the same screen.',
   },
+  subDomainUrl: {
+    _type: Type.String,
+    _default: '',
+    _description: 'The subdomain URL for the application.',
+  },
+  etlBaseUrl: {
+    _type: Type.String,
+    _default: '',
+    _description: 'The ETL base URL for the application.',
+  },
 };
 
 export interface ConfigSchema {

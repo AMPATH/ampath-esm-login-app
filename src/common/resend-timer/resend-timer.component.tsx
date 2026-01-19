@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './resend-timer.scss';
-import { getOtp } from '../../resources/otp.resource';
+import { getEmail, getOtp } from '../../resources/otp.resource';
 import { useSession } from '@openmrs/esm-framework';
 
 interface ResendTimerProps {
@@ -31,7 +31,8 @@ const ResendTimer: React.FC<ResendTimerProps> = ({ username, password }) => {
   };
 
   const handleResend = async () => {
-    await getOtp(username, password, uuid);
+    const email = await getEmail(uuid, username, password);
+    await getOtp(username, password, email);
     setSecondsLeft(RESEND_SECONDS);
   };
   return (

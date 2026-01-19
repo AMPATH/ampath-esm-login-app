@@ -49,7 +49,7 @@ export async function getOtp(username: string, password: string, email: string) 
   try {
     const url = `${etlBaseUrl}/otp?${params.toString()}`;
 
-    const res = await fetch(url, {
+    const res = await openmrsFetch(url, {
       method: 'GET',
       headers: {
         Authorization: `Basic ${credentials}`,
@@ -75,7 +75,7 @@ export async function verifyOtp(username: string, password: string, otp: string)
 
   const body = { username, otp };
 
-  const res = await fetch(url, {
+  const res = await openmrsFetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'Application/json',

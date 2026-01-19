@@ -206,13 +206,13 @@
 }
 
 .logoSection {
-  position: absolute;
-  bottom: layout.$spacing-06;
+  position: fixed;
+  bottom: layout.$spacing-01;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 layout.$spacing-06;
-  gap: 20rem;
+  padding: 0 layout.$spacing-04;
+  gap: 24rem;
 }
 
 .leftLogos {

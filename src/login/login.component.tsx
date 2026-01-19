@@ -120,33 +120,32 @@ const Login: React.FC = () => {
               try {
                 const email = await getEmail(uuid, username, password);
                 await getOtp(username, password, email);
+                navigate('otp', {
+                  state: {
+                    username,
+                    password,
+                    referrer: location?.state?.referrer,
+                  },
+                });
               } catch (err: any) {
                 setErrorMessage(err.message);
                 return;
               }
-
-              navigate('otp', {
-                state: {
-                  username,
-                  password,
-                  referrer: location?.state?.referrer,
-                },
-              });
             } else if (!session.sessionLocation) {
               const uuid = session.user.person.uuid;
               try {
                 await getOtp(username, password, uuid);
+                navigate('otp', {
+                  state: {
+                    username,
+                    password,
+                    referrer: location?.state?.referrer,
+                  },
+                });
               } catch (err: any) {
                 setErrorMessage(err.message);
                 return;
               }
-              navigate('otp', {
-                state: {
-                  username,
-                  password,
-                  referrer: location?.state?.referrer,
-                },
-              });
             }
           } else {
             setErrorMessage(t('invalidCredentials', 'Invalid username or password'));
