@@ -47,7 +47,7 @@ export async function getOtp(username: string, password: string, email: string) 
   const credentials = window.btoa(`${username}:${password}`);
 
   try {
-    const url = `${etlBaseUrl}otp?${params.toString()}`;
+    const url = `${etlBaseUrl}/otp?${params.toString()}`;
 
     const res = await fetch(url, {
       method: 'GET',
@@ -70,7 +70,7 @@ export async function getOtp(username: string, password: string, email: string) 
 
 export async function verifyOtp(username: string, password: string, otp: string) {
   const etlBaseUrl = await getEtlBaseUrl();
-  const url = etlBaseUrl + 'verify-otp';
+  const url = etlBaseUrl + '/verify-otp';
   const credentials = window.btoa(`${username}:${password}`);
 
   const body = { username, otp };
