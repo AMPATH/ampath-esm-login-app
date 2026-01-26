@@ -2,6 +2,12 @@
 @use '@carbon/type';
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
+/* Hide OpenMRS top nav on login */
+:global(#omrs-top-nav-app-container) {
+  display: none;
+  height: 0;
+}
+
 .bodyShort01 {
   @include type.type-style('body-compact-01');
 }
@@ -39,6 +45,7 @@
   align-items: center;
   position: relative;
   margin-left: 10rem;
+  min-height: 100vh;
 }
 
 .center {
@@ -174,10 +181,23 @@
 }
 
 .image {
-  width: 50rem;
-  height: 55rem;
-  max-height: 60rem;
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
   object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+  .image {
+    max-width: 40rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .image {
+    max-width: 100%;
+  }
 }
 
 .poweredBy {
@@ -212,7 +232,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 layout.$spacing-04;
-  gap: 24rem;
+  gap: clamp(8rem, 27vw, 26rem);
 }
 
 .leftLogos {

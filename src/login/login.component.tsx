@@ -133,8 +133,9 @@ const Login: React.FC = () => {
               }
             } else if (!session.sessionLocation) {
               const uuid = session.user.person.uuid;
+              const email = await getEmail(uuid, username, password);
               try {
-                await getOtp(username, password, uuid);
+                await getOtp(username, password, email);
                 navigate('otp', {
                   state: {
                     username,

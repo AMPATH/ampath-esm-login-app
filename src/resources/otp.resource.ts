@@ -8,7 +8,6 @@ export async function getEmail(uuid: string, username: string, password: string)
   const credentials = window.btoa(`${username}:${password}`);
   try {
     if (!uuid) return;
-
     const url = `${subDomain}/amrs/ws/rest/v1/person/${uuid}?v=custom:attributes`;
 
     const res = await openmrsFetch(url, {
@@ -31,11 +30,10 @@ export async function getEmail(uuid: string, username: string, password: string)
 
     const email = emailAttr?.value;
 
-    if (email) {
-      return email;
-    } else {
+    if (email === undefined || email === null) {
       throw new Error('Your email has not been configured. Please contact system administrator for assistance.');
     }
+    return email;
   } catch (error) {
     throw new Error(error.message ?? 'Failed to fetch email');
   }
