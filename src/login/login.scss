@@ -3,7 +3,7 @@
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
 /* Hide OpenMRS top nav on login */
-:global(#omrs-top-nav-app-container) {
+:global(.hide-top-nav #omrs-top-nav-app-container) {
   display: none;
   height: 0;
 }
@@ -178,6 +178,8 @@
   display: flex;
   flex-direction: row;
   gap: 10rem;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 .image {

@@ -64,6 +64,12 @@ const Login: React.FC = () => {
       }
     }
   }, [showPasswordField, showPasswordOnSeparateScreen]);
+  useEffect(() => {
+    document.body.classList.add('hide-top-nav');
+    return () => {
+      document.body.classList.remove('hide-top-nav');
+    };
+  }, []);
 
   const continueLogin = useCallback(() => {
     const currentUsername = usernameInputRef.current?.value?.trim();
