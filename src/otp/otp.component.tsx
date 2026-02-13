@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, InlineNotification, Loading } from '@carbon/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,13 @@ const OtpComponent: React.FC = () => {
   const handleOtpChange = (val: React.SetStateAction<string>) => {
     setOtpValue(val);
   };
+
+  useEffect(() => {
+    document.body.classList.add('hide-top-nav');
+    return () => {
+      document.body.classList.remove('hide-top-nav');
+    };
+  }, []);
 
   const handleVerify = async () => {
     setIsLoading(true);

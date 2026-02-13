@@ -2,6 +2,11 @@
 @use '@carbon/type';
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
+:global(.hide-top-nav #omrs-top-nav-app-container) {
+  display: none;
+  height: 0;
+}
+
 .container {
   display: flex;
   flex-direction: column;
