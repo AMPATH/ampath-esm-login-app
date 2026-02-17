@@ -5,6 +5,8 @@ import LocationPickerView from "./location-picker/location-picker-view.component
 import Login from "./login/login.component";
 import RedirectLogout from "./redirect-logout/redirect-logout.component";
 import OtpComponent from "./otp/otp.component";
+import ForgotPassword from "./forgot-password/forgot-password.component";
+import ResetPassword from "./forgot-password/reset-password/reset-password.component";
 
 const Root: React.FC = () => {
   return (
@@ -16,6 +18,8 @@ const Root: React.FC = () => {
         <Route path="logout" element={<RedirectLogout />} />
         <Route path="change-password" element={<ChangePassword />} />
         <Route path="login/otp" element={<OtpComponent />} />
+        <Route path="login/forgot-password" element={<ForgotPassword />} />
+        <Route path="login/reset-password/:activationKey" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   );

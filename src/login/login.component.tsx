@@ -217,6 +217,10 @@ const Login: React.FC = () => {
     ],
   );
 
+  const handleForgotPassword = () => {
+    navigate("forgot-password");
+  }
+
   if (!loginProvider || loginProvider.type === 'basic') {
     return (
       <>
@@ -332,6 +336,10 @@ const Login: React.FC = () => {
                             t('login', 'Log in')
                           )}
                         </Button>
+                         <div>
+                          Forgot Password?
+                          <a style={{ textDecoration: "none", cursor: "pointer" }} onClick={handleForgotPassword}> Click to Reset</a>
+                        </div>
                       </>
                     )}
                   </div>
