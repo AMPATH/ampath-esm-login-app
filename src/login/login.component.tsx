@@ -14,7 +14,7 @@ import {
 import { type ConfigSchema } from '../config-schema';
 import Logo from '../logo.component';
 import styles from './login.scss';
-import { getEmail, getOtp } from '../resources/otp.resource';
+import { getEmailAndPhone, getOtp } from '../resources/otp.resource';
 import { getOtpEnabledStatus } from '../utils/get-base-url';
 import image from '../assets/medicine.jpg';
 import openmrsLogo from '../assets/openmrs.jpg';
@@ -124,8 +124,8 @@ const Login: React.FC = () => {
               }
               const uuid = session.user.person.uuid;
               try {
-                const email = await getEmail(uuid, username, password);
-                await getOtp(username, password, email);
+                const { email, phone } = await getEmailAndPhone(uuid, username, password);
+                await getOtp(username, password, email, phone);
                 navigate('otp', {
                   state: {
                     username,
@@ -139,9 +139,9 @@ const Login: React.FC = () => {
               }
             } else if (!session.sessionLocation) {
               const uuid = session.user.person.uuid;
-              const email = await getEmail(uuid, username, password);
+              const { email, phone } = await getEmailAndPhone(uuid, username, password);
               try {
-                await getOtp(username, password, email);
+                await getOtp(username, password, email, phone);
                 navigate('otp', {
                   state: {
                     username,
@@ -218,8 +218,8 @@ const Login: React.FC = () => {
   );
 
   const handleForgotPassword = () => {
-    navigate("forgot-password");
-  }
+    navigate('forgot-password');
+  };
 
   if (!loginProvider || loginProvider.type === 'basic') {
     return (
@@ -336,9 +336,12 @@ const Login: React.FC = () => {
                             t('login', 'Log in')
                           )}
                         </Button>
-                         <div>
+                        <div>
                           Forgot Password?
-                          <a style={{ textDecoration: "none", cursor: "pointer" }} onClick={handleForgotPassword}> Click to Reset</a>
+                          <a style={{ textDecoration: 'none', cursor: 'pointer' }} onClick={handleForgotPassword}>
+                            {' '}
+                            Click to Reset
+                          </a>
                         </div>
                       </>
                     )}
