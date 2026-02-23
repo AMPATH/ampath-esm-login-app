@@ -40,10 +40,11 @@ export async function getEmailAndPhone(uuid: string, username: string, password:
     const email = emailAttr?.value;
     const phone = phoneAttr?.value;
 
-    if (email === undefined || email === null || phone === undefined || phone === null) {
-      throw new Error(
-        'Your email and phone number have not been configured. Please contact system administrator for assistance.',
-      );
+    if (email === undefined || email === null) {
+      throw new Error('Your email has not been configured. Please contact system administrator for assistance.');
+    }
+    if (phone === undefined || phone === null) {
+      throw new Error('Your phone number has not been configured. Please contact system administrator for assistance.');
     }
     return { email, phone };
   } catch (error) {
