@@ -8,7 +8,7 @@ import OTPInput from '../common/otp/otp.component';
 import ResendTimer from '../common/resend-timer/resend-timer.component';
 import Logo from '../logo.component';
 import { verifyOtp } from '../resources/otp.resource';
-import { refetchCurrentUser } from '@openmrs/esm-framework';
+import { refetchCurrentUser, navigate } from '@openmrs/esm-framework';
 
 import image from '../assets/medicine.jpg';
 
@@ -16,7 +16,7 @@ const OtpComponent: React.FC = () => {
   const [otpValue, setOtpValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -44,7 +44,7 @@ const OtpComponent: React.FC = () => {
         const session = sessionStore.session;
 
         if (!session.sessionLocation) {
-          navigate('/login/location');
+          navigate({ to: '/login/location' });
           return;
         }
 
@@ -55,7 +55,7 @@ const OtpComponent: React.FC = () => {
             : location.state.referrer;
         }
 
-        navigate(to);
+        navigate({ to });
       } else {
         setError(res.data.message);
       }
@@ -67,11 +67,10 @@ const OtpComponent: React.FC = () => {
   };
 
   const handleCancel = () => {
-    const fallback = 'login';
     if (window.history.length > 1) {
-      navigate(-1);
+      window.history.back();
     } else {
-      navigate(fallback, { replace: true });
+      navigate({ to: '/login' });
     }
   };
 
