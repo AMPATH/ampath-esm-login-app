@@ -1,12 +1,12 @@
 import { openmrsFetch } from '@openmrs/esm-framework';
-import { getEtlBaseUrl, getSubDomain } from '../utils/get-base-url';
+import { getEtlBaseUrl, getOtpKey, getSubDomain } from '../utils/get-base-url';
 
 const EMAIL_ATTRIBUTE_TYPE_UUID = 'ecabe213-160b-11ef-ad65-a0d3c1fcd41c';
 const PHONE_NUMBER_ATTRIBUTE_TYPE_UUID = '72a759a8-1359-11df-a1f1-0026b9348838';
 
 type ContactInfo = {
-  email: string | null;
-  phone: string | null;
+  email?: string | null;
+  phone?: string | null;
 };
 
 export async function getEmailAndPhone(uuid: string, username: string, password: string): Promise<ContactInfo> {
@@ -37,15 +37,15 @@ export async function getEmailAndPhone(uuid: string, username: string, password:
     const phoneAttr = data.attributes?.find(
       (attr) => !attr.voided && attr.attributeType?.uuid === PHONE_NUMBER_ATTRIBUTE_TYPE_UUID,
     );
-    const email = emailAttr?.value;
-    const phone = phoneAttr?.value;
+    const email = emailAttr?.value ?? null;
+    const phone = phoneAttr?.value ?? null;
 
-    if (email === undefined || email === null) {
-      throw new Error('Your email has not been configured. Please contact system administrator for assistance.');
+    if (!email && !phone) {
+      throw new Error(
+        'Neither email nor phone number has been configured. Please contact system administrator for assistance.',
+      );
     }
-    if (phone === undefined || phone === null) {
-      throw new Error('Your phone number has not been configured. Please contact system administrator for assistance.');
-    }
+
     return { email, phone };
   } catch (error) {
     throw new Error(error.message ?? 'Failed to fetch contact info');
@@ -54,7 +54,8 @@ export async function getEmailAndPhone(uuid: string, username: string, password:
 
 export async function getOtp(username: string, password: string, email: string, phone: string) {
   const etlBaseUrl = await getEtlBaseUrl();
-  const params = new URLSearchParams({ username, email, phone });
+  const key = await getOtpKey();
+  const params = new URLSearchParams({ username, email, phone, key });
   const credentials = window.btoa(`${username}:${password}`);
 
   try {
@@ -73,7 +74,7 @@ export async function getOtp(username: string, password: string, email: string, 
       throw new Error(data.message);
     }
 
-    return data.data.message;
+    return data.data;
   } catch (error) {
     throw new Error(error.message);
   }

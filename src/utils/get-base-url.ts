@@ -15,3 +15,8 @@ export async function getSubDomain() {
   const { subDomain } = await getConfig(moduleName);
   return subDomain ?? null;
 }
+
+export async function getOtpKey() {
+  const { otpKey } = await getConfig(moduleName);
+  return otpKey ?? null;
+}

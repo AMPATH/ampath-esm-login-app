@@ -20,7 +20,7 @@ const OtpComponent: React.FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const { username, password } = location.state || {};
+  const { username, password, message } = location.state || {};
 
   const handleOtpChange = (val: React.SetStateAction<string>) => {
     setOtpValue(val);
@@ -50,10 +50,13 @@ const OtpComponent: React.FC = () => {
 
         let to = '/home';
         if (location.state?.referrer) {
-          to = location.state.referrer.startsWith('/')
-            ? `\${openmrsSpaBase}${location.state.referrer}`
-            : location.state.referrer;
+          to = location.state.referrer;
         }
+        // if (location.state?.referrer) {
+        //   to = location.state.referrer.startsWith('/')
+        //     ? `\${openmrsSpaBase}${location.state.referrer}`
+        //     : location.state.referrer;
+        // }
 
         navigate(to);
       } else {
@@ -84,9 +87,7 @@ const OtpComponent: React.FC = () => {
           </div>
           <div className={styles.container}>
             <h2 className={styles.header}>OTP</h2>
-            <p>
-              Please Check your email <br /> and enter your One Time Password
-            </p>
+            <p>{message || 'Enter the OTP sent to your registered email and phone number to complete login.'}</p>
             <OTPInput length={5} onChange={handleOtpChange} />
             {error && (
               <InlineNotification

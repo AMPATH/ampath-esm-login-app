@@ -125,12 +125,13 @@ const Login: React.FC = () => {
               const uuid = session.user.person.uuid;
               try {
                 const { email, phone } = await getEmailAndPhone(uuid, username, password);
-                await getOtp(username, password, email, phone);
+                const res = await getOtp(username, password, email, phone);
                 navigate('otp', {
                   state: {
                     username,
                     password,
                     referrer: location?.state?.referrer,
+                    message: res,
                   },
                 });
               } catch (err: any) {
@@ -141,12 +142,13 @@ const Login: React.FC = () => {
               const uuid = session.user.person.uuid;
               const { email, phone } = await getEmailAndPhone(uuid, username, password);
               try {
-                await getOtp(username, password, email, phone);
+                const res = await getOtp(username, password, email, phone);
                 navigate('otp', {
                   state: {
                     username,
                     password,
                     referrer: location?.state?.referrer,
+                    message: res,
                   },
                 });
               } catch (err: any) {
