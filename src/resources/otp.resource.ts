@@ -74,7 +74,7 @@ export async function getOtp(username: string, password: string, email: string, 
       throw new Error(data.message);
     }
 
-    return data.data.message;
+    return data.data;
   } catch (error) {
     throw new Error(error.message);
   }

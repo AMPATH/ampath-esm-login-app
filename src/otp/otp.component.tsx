@@ -87,7 +87,7 @@ const OtpComponent: React.FC = () => {
           </div>
           <div className={styles.container}>
             <h2 className={styles.header}>OTP</h2>
-            <p>{message || 'Enter the OTP sent to your registered email and phone number to complete login.'}</p>
+            <p>{message.message || 'Enter the OTP sent to your registered email and phone number to complete login.'}</p>
             <OTPInput length={5} onChange={handleOtpChange} />
             {error && (
               <InlineNotification
