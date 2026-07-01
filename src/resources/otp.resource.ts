@@ -1,4 +1,4 @@
-import { openmrsFetch } from '@openmrs/esm-framework';
+import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 import { getEtlBaseUrl, getOtpKey, getSubDomain } from '../utils/get-base-url';
 
 const EMAIL_ATTRIBUTE_TYPE_UUID = 'ecabe213-160b-11ef-ad65-a0d3c1fcd41c';
@@ -10,11 +10,10 @@ type ContactInfo = {
 };
 
 export async function getEmailAndPhone(uuid: string, username: string, password: string): Promise<ContactInfo> {
-  const subDomain = await getSubDomain();
   const credentials = window.btoa(`${username}:${password}`);
   try {
     if (!uuid) return;
-    const url = `/amrs/ws/rest/v1/person/${uuid}?v=custom:attributes`;
+    const url = `${restBaseUrl}/person/${uuid}?v=custom:attributes`;
 
     const res = await openmrsFetch(url, {
       method: 'GET',
