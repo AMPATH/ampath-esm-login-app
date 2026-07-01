@@ -14,7 +14,7 @@ export async function getEmailAndPhone(uuid: string, username: string, password:
   const credentials = window.btoa(`${username}:${password}`);
   try {
     if (!uuid) return;
-    const url = `${subDomain}/amrs/ws/rest/v1/person/${uuid}?v=custom:attributes`;
+    const url = `/amrs/ws/rest/v1/person/${uuid}?v=custom:attributes`;
 
     const res = await openmrsFetch(url, {
       method: 'GET',
