@@ -14,6 +14,7 @@ export async function getEmailAndPhone(uuid: string, username: string, password:
   try {
     if (!uuid) return;
     const url = `${restBaseUrl}/person/${uuid}?v=custom:attributes`;
+    console.log({url});
 
     const res = await openmrsFetch(url, {
       method: 'GET',
