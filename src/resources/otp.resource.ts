@@ -60,12 +60,7 @@ export async function getOtp(username: string, password: string, email: string, 
   try {
     const url = `${etlBaseUrl}/otp?${params.toString()}`;
 
-    const res = await openmrsFetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${credentials}`,
-      },
-    });
+    const res = await openmrsFetch(url);
 
     const data = await res.json();
 
