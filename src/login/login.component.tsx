@@ -110,8 +110,9 @@ const Login: React.FC = () => {
         const sessionStore = await refetchCurrentUser(currentUsername, currentPassword);
         const session = sessionStore.session;
         const authenticated = sessionStore?.session?.authenticated;
+        const username = sessionStore?.session?.user?.username;
 
-        if (isOtpEnabled === true) {
+        if (isOtpEnabled === true && username !== 'admin') {
           if (authenticated) {
             if (session.sessionLocation) {
               let to = loginLinks?.loginSuccess || '/home';
@@ -122,7 +123,7 @@ const Login: React.FC = () => {
                   to = location.state.referrer;
                 }
               }
-              const uuid = session.user.person.uuid;
+              const uuid = session?.user?.person.uuid;
               try {
                 const { email, phone } = await getEmailAndPhone(uuid, username, password);
                 const res = await getOtp(username, password, email, phone);
@@ -139,7 +140,7 @@ const Login: React.FC = () => {
                 return;
               }
             } else if (!session.sessionLocation) {
-              const uuid = session.user.person.uuid;
+              const uuid = session?.user?.person.uuid;
               const { email, phone } = await getEmailAndPhone(uuid, username, password);
               try {
                 const res = await getOtp(username, password, email, phone);
