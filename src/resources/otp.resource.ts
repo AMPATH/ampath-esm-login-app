@@ -94,3 +94,13 @@ export async function verifyOtp(username: string, password: string, otp: string)
 
   return data;
 }
+
+export async function deleteSession() {
+  try {
+    await openmrsFetch('/ws/rest/v1/session', {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error('Failed to delete OpenMRS session:', error);
+  }
+}

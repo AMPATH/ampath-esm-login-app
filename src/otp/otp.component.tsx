@@ -7,7 +7,7 @@ import styles from './otp.module.scss';
 import OTPInput from '../common/otp/otp.component';
 import ResendTimer from '../common/resend-timer/resend-timer.component';
 import Logo from '../logo.component';
-import { verifyOtp } from '../resources/otp.resource';
+import { deleteSession, verifyOtp } from '../resources/otp.resource';
 import { refetchCurrentUser } from '@openmrs/esm-framework';
 
 import image from '../assets/medicine.jpg';
@@ -89,9 +89,11 @@ const OtpComponent: React.FC = () => {
    * User declines the Terms & Conditions.
    * Send them back to login.
    */
-  const handleDeclineTerms = () => {
+  const handleDeclineTerms = async () => {
     setShowTermsModal(false);
     setTermsAccepted(false);
+
+    await deleteSession();
 
     navigate('/login', {
       replace: true,
@@ -148,7 +150,7 @@ const OtpComponent: React.FC = () => {
       {/* Terms & Conditions Modal */}
       <Modal
         open={showTermsModal}
-        modalHeading="Terms and Conditions"
+        modalHeading=""
         primaryButtonText="Continue"
         secondaryButtonText="Decline"
         primaryButtonDisabled={!termsAccepted}
