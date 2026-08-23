@@ -80,3 +80,9 @@
     margin-bottom: 1rem;
   }
 }
+
+.modal {
+  :global(.cds--modal-header__heading) {
+    font-weight: 700;
+  }
+}

@@ -149,8 +149,9 @@ const OtpComponent: React.FC = () => {
 
       {/* Terms & Conditions Modal */}
       <Modal
+        className={styles.modal}
         open={showTermsModal}
-        modalHeading=""
+        modalHeading="Authorized access only"
         primaryButtonText="Continue"
         secondaryButtonText="Decline"
         primaryButtonDisabled={!termsAccepted}
@@ -161,8 +162,6 @@ const OtpComponent: React.FC = () => {
       >
         <div className={styles.termsContent}>
           <div className={styles.termsText}>
-            <h4>Authorized access only!</h4>
-
             <p>
               This system contains confidential and sensitive health information for patients/clients. Access is
               restricted to authorized users for approved healthcare providers and official purposes only. <br />
@@ -173,8 +172,8 @@ const OtpComponent: React.FC = () => {
             <p>
               <strong>Consent Notice:</strong>
               By logging into thisTaifaCare HMIS, you acknowledge that patient information is maintained within the
-              system , in compliance with section 24 and section 31 of the Digital Health Act, ensuring confidentiality,
-              integrity and lawful use of digital health data.
+              system , in compliance with section 24 and section 31 of the Digital Health Act, 2023. You consent to
+              abide by the Act, ensuring confidentiality, integrity and lawful use of digital health data.
               <br /> Unauthorized access or misuse is prohibited and subject to disciplinary and legal action under
               Section 59.
             </p>
@@ -182,7 +181,7 @@ const OtpComponent: React.FC = () => {
 
           <Checkbox
             id="Consent"
-            labelText="I have read and consent to abide by the Digital Health Act provisions"
+            labelText="I Agree - I have read and consent to abide by the Digital Health Act provisions"
             checked={termsAccepted}
             onChange={(_, { checked }) => setTermsAccepted(checked)}
           />
