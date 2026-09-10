@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +12,7 @@ import styles from '../../forgot-password/forgot-password.scss';
 
 const ResetPassword: React.FC = () => {
     const { activationKey } = useParams<{ activationKey: string }>();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const [isResetingPassword, setIsResetingPassword] = useState(false);
 
@@ -49,6 +50,7 @@ const ResetPassword: React.FC = () => {
                         title: t('passwordResetSuccessfull', 'Password reset successfull'),
                         kind: 'success',
                     });
+                    navigate('/login');
                 })
                 .catch((error) => {
                     showSnackbar({
@@ -61,7 +63,7 @@ const ResetPassword: React.FC = () => {
                     setIsResetingPassword(false);
                 });
         },
-        [t, activationKey],
+        [t, activationKey, navigate],
     );
 
     const onError = useCallback(() => setIsResetingPassword(false), []);
